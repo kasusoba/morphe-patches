@@ -28,6 +28,8 @@ import app.morphe.extension.instagram.patches.comment.copyTextButton.CopyTextBut
 import app.morphe.extension.instagram.patches.comment.debugButton.DebugButton;
 import app.morphe.extension.instagram.patches.comment.saveMediaButton.SaveMediaButton;
 import app.morphe.extension.instagram.patches.comment.copyGifKeywordButton.CopyGifKeywordButton;
+import app.morphe.extension.instagram.patches.comment.favoriteGifButton.FavoriteGifCommentButton;
+import app.morphe.extension.instagram.patches.comment.favoriteGifButton.FavoriteCommentGif;
 
 // Thanks to MyInsta.
 @SuppressWarnings("unused")
@@ -48,6 +50,9 @@ public class HandleCommentButton {
             }
             if(commentData.hasGifMedia() && Pref.commentCopyGifKeywordButton()){
                 list.add(CopyGifKeywordButton.A00);
+            }
+            if(commentData.hasGifMedia() && Pref.commentFavoriteGifButton()){
+                list.add(FavoriteGifCommentButton.A00);
             }
         } catch (Exception e) {
             PikoUtils.logger(e);
@@ -113,6 +118,21 @@ public class HandleCommentButton {
                 } catch (Exception e) {
                     PikoUtils.logger(e);
                     PikoUtils.toast(str("kasusoba_gif_keyword_none"));
+                }
+                return true;
+            } else if (button.equals(FavoriteGifCommentButton.A00)) {
+                try {
+                    CommentData commentData = new CommentData(commentObject);
+                    if (commentData.hasGifMedia()) {
+                        FavoriteCommentGif.favorite(
+                                commentData.getGifTag(),         // GIPHY id
+                                commentData.getGifUrl(),         // gif url
+                                commentData.getWebpUrl(),        // webp url
+                                commentData.getGifCreatorName(), // creator username
+                                0f, 0f);                         // dims (TODO: extract real w/h)
+                    }
+                } catch (Exception e) {
+                    PikoUtils.logger(e);
                 }
                 return true;
             }

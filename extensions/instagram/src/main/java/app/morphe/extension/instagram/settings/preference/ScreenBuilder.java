@@ -575,6 +575,15 @@ public class ScreenBuilder {
                     )
             );
         }
+        if (SettingsStatus.favoriteGifButton) {
+            addPreference(
+                    helper.switchPreference(
+                            str("kasusoba_favorite_gif_comment"),
+                            str("kasusoba_favorite_gif_comment_desc"),
+                            Settings.COMMENT_FAVORITE_GIF_BUTTON
+                    )
+            );
+        }
         if (SettingsStatus.removeEmptyBottomSpace) {
             addPreference(
                     helper.switchPreference(

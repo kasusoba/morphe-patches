@@ -178,6 +178,10 @@ public class SettingsStatus {
     public static void copyGifKeywordButton() {
         copyGifKeywordButton = true;
     }
+    public static boolean favoriteGifButton = false;
+    public static void favoriteGifButton() {
+        favoriteGifButton = true;
+    }
     public static boolean removeEmptyBottomSpace = false;
     public static void removeEmptyBottomSpace() {
         removeEmptyBottomSpace = true;
@@ -190,7 +194,7 @@ public class SettingsStatus {
     public static void moreOptionsOnPost() { moreOptionsOnPost = true; }
     public static boolean moreOptionsOnProfile = false;
     public static void moreOptionsOnProfile() { moreOptionsOnProfile = true; }
-    public static boolean miscSection() {return (copyGifKeywordButton || saveMediaCommentButton || moreOptionsOnProfile || moreOptionsOnPost || customiseStoryRingSize || changeLikeAnimation || unlockPlusBenefits || storiesAudioAutoplay || disableVideoAutoplay || removeEmptyBottomSpace || copyCommentButton || improveImageViewing || unlimitedReplaysOnEphemeralMedia || customiseStoryTimestamp || disableAnalytics || disableDiscoverPeople || followBackIndicator || viewStoryMentions || disableStoryFlipping || hideReshareButton);}
+    public static boolean miscSection() {return (favoriteGifButton || copyGifKeywordButton || saveMediaCommentButton || moreOptionsOnProfile || moreOptionsOnPost || customiseStoryRingSize || changeLikeAnimation || unlockPlusBenefits || storiesAudioAutoplay || disableVideoAutoplay || removeEmptyBottomSpace || copyCommentButton || improveImageViewing || unlimitedReplaysOnEphemeralMedia || customiseStoryTimestamp || disableAnalytics || disableDiscoverPeople || followBackIndicator || viewStoryMentions || disableStoryFlipping || hideReshareButton);}
 
     //Download section.
     public static boolean downloadMedia = false;
@@ -222,6 +226,7 @@ public class SettingsStatus {
         FLAGS.put(str("piko_save_media_comment"),SettingsStatus.saveMediaCommentButton);
         FLAGS.put(str("piko_copy_comment"),SettingsStatus.copyCommentButton);
         FLAGS.put(str("kasusoba_copy_gif_keyword"),SettingsStatus.copyGifKeywordButton);
+        FLAGS.put(str("kasusoba_favorite_gif_comment"),SettingsStatus.favoriteGifButton);
         FLAGS.put(str("piko_hide_reshare_button"),SettingsStatus.hideReshareButton);
         FLAGS.put(str("piko_improve_image_viewing"),SettingsStatus.improveImageViewing);
         FLAGS.put(str("piko_unlimited_replays"),SettingsStatus.unlimitedReplaysOnEphemeralMedia);
