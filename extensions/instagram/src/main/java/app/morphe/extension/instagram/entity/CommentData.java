@@ -88,4 +88,37 @@ public class CommentData extends Entity implements GifMediaInterface {
         String gifTag = this.getGifTag();
         return creatorName+"_"+gifTag+".gif";
     }
+
+    /**
+     * The GIF's human-readable title (searchable keyword), e.g. "Happy Dance Sticker".
+     * Reads it by calling the unobfuscated getTitle() accessor on the GIF object
+     * (com.instagram.api.schemas.CommentGiphyMediaInfo) via reflection, so no
+     * per-version field mapping is needed. Note: getGifTag() maps to the GIPHY *id*,
+     * not the title — this is the field to use for "search this GIF by name".
+     */
+    public String getGifTitle() throws Exception {
+        return this.invokeGifStringMethod("getTitle");
+    }
+
+    /** GIPHY id of the GIF (e.g. "Z5hH4UkgzyaTqhi82b"). */
+    public String getGifId() throws Exception {
+        return this.invokeGifStringMethod("getId");
+    }
+
+    /**
+     * Best-effort: call a no-arg String accessor (e.g. getTitle/getId) on the GIF object
+     * using Class#getMethod (searches the public method hierarchy incl. interfaces).
+     * Returns null instead of throwing so a callsite never crashes on an unexpected model.
+     */
+    private String invokeGifStringMethod(String methodName) {
+        try {
+            Object gif = this.getGifMedia();
+            if (gif == null) return null;
+            java.lang.reflect.Method m = gif.getClass().getMethod(methodName);
+            Object result = m.invoke(gif);
+            return result == null ? null : result.toString();
+        } catch (Throwable t) {
+            return null;
+        }
+    }
 }

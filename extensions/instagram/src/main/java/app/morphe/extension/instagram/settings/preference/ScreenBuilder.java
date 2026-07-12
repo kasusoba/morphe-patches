@@ -566,6 +566,15 @@ public class ScreenBuilder {
                     )
             );
         }
+        if (SettingsStatus.copyGifKeywordButton) {
+            addPreference(
+                    helper.switchPreference(
+                            str("kasusoba_copy_gif_keyword"),
+                            str("kasusoba_copy_gif_keyword_desc"),
+                            Settings.COMMENT_COPY_GIF_KEYWORD_BUTTON
+                    )
+            );
+        }
         if (SettingsStatus.removeEmptyBottomSpace) {
             addPreference(
                     helper.switchPreference(

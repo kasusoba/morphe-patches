@@ -113,8 +113,15 @@ gradle-app.setting
 # # Work around https://youtrack.jetbrains.com/issue/IDEA-116898
 # gradle/wrapper/gradle-wrapper.properties
 
-# Potentially copyrighted test APK
+# Potentially copyrighted test APK / patched output bundles
 *.apk
+*.apkm
+
+# Local dev tooling & reverse-engineering scratch (large; not part of the repo)
+/tools/
+/.gifhunt/
+/.patch-tmp/
+tmp-*
 
 # Ignore vscode config
 .vscode/

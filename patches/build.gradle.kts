@@ -1,13 +1,13 @@
-group = "crimera"
+group = "kasusoba"
 
 patches {
     about {
-        name = "Piko"
-        description = "Morphe patches focused on Twitter/X"
-        source = "git@github.com:crimera/piko.git"
-        author = "crimera"
+        name = "Kasusoba patches"
+        description = "Personal Morphe patches for Instagram (comment GIF favorite + keyword). Based on Piko."
+        source = "na"
+        author = "kasusoba"
         contact = "na"
-        website = "https://github.com/crimera/piko"
+        website = "na"
         license = "GNU General Public License v3.0"
     }
 }

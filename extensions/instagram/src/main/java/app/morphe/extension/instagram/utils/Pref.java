@@ -238,6 +238,10 @@ public class Pref {
         return SharedPref.getBooleanPref(Settings.COMMENT_SAVE_MEDIA_BUTTON) && SettingsStatus.saveMediaCommentButton;
     }
 
+    public static boolean commentCopyGifKeywordButton() {
+        return SharedPref.getBooleanPref(Settings.COMMENT_COPY_GIF_KEYWORD_BUTTON) && SettingsStatus.copyGifKeywordButton;
+    }
+
     public static String changeLikeAnimation() {
         return SharedPref.getStringPref(Settings.CHANGE_LIKE_ANIMATION);
     }

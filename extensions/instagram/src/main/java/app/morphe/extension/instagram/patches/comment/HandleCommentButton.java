@@ -27,6 +27,7 @@ import app.morphe.extension.instagram.patches.download.DownloadUtils;
 import app.morphe.extension.instagram.patches.comment.copyTextButton.CopyTextButton;
 import app.morphe.extension.instagram.patches.comment.debugButton.DebugButton;
 import app.morphe.extension.instagram.patches.comment.saveMediaButton.SaveMediaButton;
+import app.morphe.extension.instagram.patches.comment.copyGifKeywordButton.CopyGifKeywordButton;
 
 // Thanks to MyInsta.
 @SuppressWarnings("unused")
@@ -44,6 +45,9 @@ public class HandleCommentButton {
             }
             if(commentData.hasMedia() && Pref.commentSaveMediaButton()){
                 list.add(SaveMediaButton.A00);
+            }
+            if(commentData.hasGifMedia() && Pref.commentCopyGifKeywordButton()){
+                list.add(CopyGifKeywordButton.A00);
             }
         } catch (Exception e) {
             PikoUtils.logger(e);
@@ -93,6 +97,24 @@ public class HandleCommentButton {
                     DownloadUtils.downloadMediaUrl(context, mediaLink, subFolder, fileName);
                     return true;
                 }
+            } else if (button.equals(CopyGifKeywordButton.A00)) {
+                // Always consume our own button (return true) so Instagram's native click
+                // handler never runs on it (that path throws NoWhenBranchMatchedException).
+                try {
+                    CommentData commentData = new CommentData(commentObject);
+                    // getGifTag() maps to the GIF's GIPHY id (e.g. "D63HGAzG15LQrjBPRE").
+                    // The human title isn't in the comment data, so resolve it from GIPHY's
+                    // API by id, then copy it. Runs the network call off the main thread.
+                    String gifId = commentData.getGifTag();
+                    String creator = null;
+                    try { creator = commentData.getGifCreatorName(); } catch (Exception ignored) {}
+                    app.morphe.extension.instagram.patches.comment.copyGifKeywordButton.GifKeywordResolver
+                            .resolveAndCopy(gifId, creator);
+                } catch (Exception e) {
+                    PikoUtils.logger(e);
+                    PikoUtils.toast(str("kasusoba_gif_keyword_none"));
+                }
+                return true;
             }
 
         } catch (Exception e) {

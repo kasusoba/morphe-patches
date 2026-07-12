@@ -99,6 +99,10 @@ Note: On a clean install, the \'Tip\' animation may appear but will stop on its 
     <string name="piko_comment_copied_failed">No text found to copy</string>
     <string name="piko_save_media_comment">Save media comment</string>
     <string name="piko_save_media_comment_desc">Adds a button to save media comments on posts and reels</string>
+    <string name="kasusoba_copy_gif_keyword">Copy GIF keyword</string>
+    <string name="kasusoba_copy_gif_keyword_desc">Adds a button to copy the search keyword/name of a GIF in a comment</string>
+    <string name="kasusoba_gif_keyword_copied">GIF keyword copied</string>
+    <string name="kasusoba_gif_keyword_none">No GIF keyword found</string>
     <string name="piko_copy_username">Copy username</string>
     <string name="piko_copy_full_name">Copy full name</string>
     <string name="piko_copy_user_id">Copy user id</string>
