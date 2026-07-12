@@ -12,10 +12,10 @@ internal const val COPY_GIF_KEYWORD_BUTTON_EXTENSION_CLASS = "${COPY_GIF_KEYWORD
 internal const val INIT_COPY_GIF_KEYWORD_BUTTON_EXTENSION_CLASS = "${COPY_GIF_KEYWORD_EXTENSION_CLASS}/InitCopyGifKeywordButton;"
 internal const val GIF_KEYWORD_RESOLVER_CLASS = "${COPY_GIF_KEYWORD_EXTENSION_CLASS}/GifKeywordResolver;"
 
-// Locates the placeholder GIPHY key const in GifKeywordResolver's <clinit> so the patch
+// Locates the placeholder GIPHY key const in GifKeywordResolver.apiKey() so the patch
 // can inject the user-supplied key at patch time via changeFirstString.
 internal object GiphyApiKeyExtensionFingerprint : Fingerprint(
-    name = "<clinit>",
+    name = "apiKey",
     definingClass = GIF_KEYWORD_RESOLVER_CLASS,
     strings = listOf("PASTE_GIPHY_API_KEY_HERE"),
 )

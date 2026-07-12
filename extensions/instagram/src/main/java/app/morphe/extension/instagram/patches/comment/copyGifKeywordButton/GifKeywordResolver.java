@@ -27,10 +27,12 @@ import app.morphe.extension.crimera.PikoUtils;
  */
 public final class GifKeywordResolver {
 
-    // GIPHY REST API key. Left as a placeholder in source (never commit a real key);
-    // the "Copy GIF keyword" patch injects the real key at patch time from the
-    // `giphyApiKey` option. NOT final, so javac won't inline it at use sites.
-    private static String GIPHY_API_KEY = "PASTE_GIPHY_API_KEY_HERE";
+    // GIPHY REST API key. The string below is a placeholder in source (never commit a
+    // real key); the "Copy GIF keyword" patch replaces it at patch time via the
+    // `giphyApiKey` option (fingerprint on this named method + changeFirstString).
+    private static String apiKey() {
+        return "PASTE_GIPHY_API_KEY_HERE";
+    }
 
     // Cache resolved id -> keyword so repeated taps on the same GIF don't spend an API
     // call (the beta key is limited to 100 calls/hour).
@@ -73,7 +75,7 @@ public final class GifKeywordResolver {
         if (isBlank(gifId)) return null;
         HttpURLConnection conn = null;
         try {
-            URL url = new URL("https://api.giphy.com/v1/gifs/" + gifId + "?api_key=" + GIPHY_API_KEY);
+            URL url = new URL("https://api.giphy.com/v1/gifs/" + gifId + "?api_key=" + apiKey());
             conn = (HttpURLConnection) url.openConnection();
             conn.setConnectTimeout(8000);
             conn.setReadTimeout(8000);
