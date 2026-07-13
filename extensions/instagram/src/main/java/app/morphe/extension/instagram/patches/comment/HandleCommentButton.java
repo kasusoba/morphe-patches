@@ -28,6 +28,8 @@ import app.morphe.extension.instagram.patches.comment.copyTextButton.CopyTextBut
 import app.morphe.extension.instagram.patches.comment.debugButton.DebugButton;
 import app.morphe.extension.instagram.patches.comment.saveMediaButton.SaveMediaButton;
 import app.morphe.extension.instagram.patches.comment.copyGifKeywordButton.CopyGifKeywordButton;
+import app.morphe.extension.instagram.patches.comment.copyGifKeywordButton.GifKeywordResolver;
+import app.morphe.extension.instagram.patches.comment.copyGiphyLinkButton.CopyGiphyLinkButton;
 import app.morphe.extension.instagram.patches.comment.favoriteGifButton.FavoriteGifCommentButton;
 import app.morphe.extension.instagram.patches.comment.favoriteGifButton.FavoriteCommentGif;
 
@@ -50,6 +52,9 @@ public class HandleCommentButton {
             }
             if(commentData.hasGifMedia() && Pref.commentCopyGifKeywordButton()){
                 list.add(CopyGifKeywordButton.A00);
+            }
+            if(commentData.hasGifMedia() && Pref.commentCopyGiphyLinkButton()){
+                list.add(CopyGiphyLinkButton.A00);
             }
             if(commentData.hasGifMedia() && Pref.commentFavoriteGifButton()){
                 list.add(FavoriteGifCommentButton.A00);
@@ -131,6 +136,16 @@ public class HandleCommentButton {
                                 commentData.getGifCreatorName(), // creator username
                                 0f, 0f);                         // dims (TODO: extract real w/h)
                     }
+                } catch (Exception e) {
+                    PikoUtils.logger(e);
+                }
+                return true;
+            } else if (button.equals(CopyGiphyLinkButton.A00)) {
+                // Always consume our own button so IG's native handler never runs on it.
+                try {
+                    CommentData commentData = new CommentData(commentObject);
+                    // getGifTag() maps to the GIF's GIPHY id; build a shareable giphy.com link.
+                    GifKeywordResolver.copyGiphyLink(commentData.getGifTag());
                 } catch (Exception e) {
                     PikoUtils.logger(e);
                 }

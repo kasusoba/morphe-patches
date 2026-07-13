@@ -66,12 +66,14 @@ val copyGifKeywordPatch =
 
         execute {
 
+            // Reuse Instagram's own "Copy text" button label (IG's real strings live in a
+            // runtime FB language pack, so custom/added strings can't be used here).
             var stringLateral: Long
             CopyTextChatButtonToStringFingerprint.classDef.methods.first { it.name == "<init>" }.apply {
                 stringLateral = (instructions.last { it.opcode == Opcode.CONST } as Instruction31i).wideLiteral
             }
 
-            var drawableLateral: Long = getResourceId(ResourceType.DRAWABLE, "instagram_gif_outline_24")
+            val drawableLateral: Long = getResourceId(ResourceType.DRAWABLE, "instagram_gif_outline_24")
 
             addButtonAttribute(
                 stringLateral,

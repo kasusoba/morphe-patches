@@ -103,6 +103,8 @@ Note: On a clean install, the \'Tip\' animation may appear but will stop on its 
     <string name="kasusoba_copy_gif_keyword_desc">Adds a button to copy the name of a GIF in a comment</string>
     <string name="kasusoba_gif_keyword_copied">GIF name copied</string>
     <string name="kasusoba_gif_keyword_none">No GIF name found</string>
+    <string name="kasusoba_copy_giphy_link">Copy GIPHY link</string>
+    <string name="kasusoba_copy_giphy_link_desc">Adds a button to copy a shareable GIPHY link of a GIF in a comment</string>
     <string name="kasusoba_favorite_gif_comment">Favorite GIF comment</string>
     <string name="kasusoba_favorite_gif_comment_desc">Adds a button to favorite a GIF posted in a comment</string>
     <string name="kasusoba_favorite">Favorite</string>

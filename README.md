@@ -29,6 +29,18 @@ title: de-slugged slug → creator → `giphy.com/gifs/<id>`. The menu label is 
 - **`Copy GIF name in picker`** — an item in the long-press menu of a GIF tile in the
   GIF picker (next to *Favorite*), in both the DM and comment/reel pickers.
 
+## Copy GIPHY link patches
+
+Copy a shareable GIPHY page link (`https://giphy.com/gifs/<id>`) for a GIF. No GIPHY key
+needed. On DMs and the GIF picker the menu label is a localized "Copy GIPHY link"; the
+comment button reuses Instagram's own "Copy" label (Instagram's real strings live in a
+runtime language pack, so custom labels aren't available on the comment surface) and is
+distinguished by a link icon.
+
+- **`Copy GIPHY link`** — a button on a comment that contains a GIF.
+- part of **`Copy GIF name in DM`** / **`Copy GIF name in picker`** — the DM and picker
+  menus show *both* "Copy GIF name" and "Copy GIPHY link" items.
+
 ## Favorite GIF patches
 
 Favorite (save) GIFs on surfaces where Instagram doesn't normally let you. No GIPHY key
@@ -55,6 +67,7 @@ java -jar morphe-cli.jar patch \
   -e "Copy GIF name" \
   -e "Copy GIF name in DM" \
   -e "Copy GIF name in picker" \
+  -e "Copy GIPHY link" \
   -e "Favorite GIF in comment picker" \
   -e "Favorite GIF comment" \
   <instagram>.apkm

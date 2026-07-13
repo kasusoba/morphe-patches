@@ -46,6 +46,7 @@ public class Settings {
     public static final BooleanSetting COMMENT_COPY_BUTTON = new BooleanSetting("comment_copy_button", true);
     public static final BooleanSetting COMMENT_SAVE_MEDIA_BUTTON = new BooleanSetting("comment_save_media_button", true);
     public static final BooleanSetting COMMENT_COPY_GIF_KEYWORD_BUTTON = new BooleanSetting("comment_copy_gif_keyword_button", true);
+    public static final BooleanSetting COMMENT_COPY_GIPHY_LINK_BUTTON = new BooleanSetting("comment_copy_giphy_link_button", true);
     public static final BooleanSetting COMMENT_FAVORITE_GIF_BUTTON = new BooleanSetting("comment_favorite_gif_button", true);
     public static final BooleanSetting HIDE_GROUP_CREATION_BUTTON_ON_SHARESHEET = new BooleanSetting("hide_group_creation_button_on_sharesheet", true);
     public static final BooleanSetting DISABLE_REELS_SCROLLING = new BooleanSetting("disable_reels_scrolling", false);

@@ -61,6 +61,38 @@ public final class GifKeywordResolver {
         }
     }
 
+    /** Localized "Copy GIPHY link" menu label. Shared by the DM and picker surfaces. */
+    public static String linkLabel() {
+        switch (java.util.Locale.getDefault().getLanguage()) {
+            case "ja": return "GIPHYリンクをコピー";
+            case "es": return "Copiar enlace de GIPHY";
+            case "pt": return "Copiar link do GIPHY";
+            case "fr": return "Copier le lien GIPHY";
+            case "de": return "GIPHY-Link kopieren";
+            case "it": return "Copia link GIPHY";
+            case "id": return "Salin tautan GIPHY";
+            case "ru": return "Копировать ссылку GIPHY";
+            case "ko": return "GIPHY 링크 복사";
+            case "zh": return "复制 GIPHY 链接";
+            case "ar": return "نسخ رابط GIPHY";
+            case "hi": return "GIPHY लिंक कॉपी करें";
+            case "tr": return "GIPHY bağlantısını kopyala";
+            default: return "Copy GIPHY link";
+        }
+    }
+
+    /** Copy a shareable GIPHY page link for the given GIF id (no API call needed). */
+    public static void copyGiphyLink(String gifId) {
+        try {
+            if (isBlank(gifId)) { PikoUtils.toast("No GIPHY link"); return; }
+            String link = "https://giphy.com/gifs/" + gifId;
+            Utils.setClipboard(link);
+            PikoUtils.toast("GIPHY link copied");
+        } catch (Throwable t) {
+            PikoUtils.logger(t);
+        }
+    }
+
     public static void resolveAndCopy(final String gifId, final String creator) {
         new Thread(new Runnable() {
             @Override

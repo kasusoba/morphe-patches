@@ -56,8 +56,20 @@ fun addButtonAttribute(
         val buttonStyleInstruction = getInstruction(indexOfFirstInstruction(drawableIndex, Opcode.SGET_OBJECT))
         val buttonStyleClass = extensionToClassName(buttonStyleInstruction.fieldExtractor().definingClass)
 
-        val gotoIndex = indexOfFirstInstruction(drawableIndex, Opcode.GOTO)
-        val bundleInstruction = getInstruction(gotoIndex - 1)
+        // The button's bundle (super) constructor: the first invoke-direct to an <init> with
+        // >= 4 params after the drawable anchor. Original piko used `getInstruction(gotoIndex-1)`
+        // (the instruction before the first goto after the drawable), assuming it was this
+        // invoke — but after 2+ prior button injections shuffle the method, that goto no longer
+        // sits right after the invoke, so gotoIndex-1 lands on a `new-instance` and the
+        // MethodReference lookup NPEs. Finding the invoke directly is robust to injection count.
+        val bundleInstruction =
+            instructions.first {
+                it.location.index > drawableIndex &&
+                    it.opcode == Opcode.INVOKE_DIRECT &&
+                    it.getReference<MethodReference>()?.let { ref ->
+                        ref.name == "<init>" && ref.parameterTypes.size >= 4
+                    } == true
+            }
         val bundleMethodRef = bundleInstruction.getReference<MethodReference>()!!
         val bundleClass = bundleMethodRef.definingClass
         val bundleParameters = bundleMethodRef.parameterTypes

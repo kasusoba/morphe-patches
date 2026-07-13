@@ -242,6 +242,10 @@ public class Pref {
         return SharedPref.getBooleanPref(Settings.COMMENT_COPY_GIF_KEYWORD_BUTTON) && SettingsStatus.copyGifKeywordButton;
     }
 
+    public static boolean commentCopyGiphyLinkButton() {
+        return SharedPref.getBooleanPref(Settings.COMMENT_COPY_GIPHY_LINK_BUTTON) && SettingsStatus.copyGiphyLinkButton;
+    }
+
     public static boolean commentFavoriteGifButton() {
         return SharedPref.getBooleanPref(Settings.COMMENT_FAVORITE_GIF_BUTTON) && SettingsStatus.favoriteGifButton;
     }
