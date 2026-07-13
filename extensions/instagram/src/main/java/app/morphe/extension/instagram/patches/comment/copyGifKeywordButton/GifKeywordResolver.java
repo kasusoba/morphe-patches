@@ -38,6 +38,29 @@ public final class GifKeywordResolver {
     // call (the beta key is limited to 100 calls/hour).
     private static final java.util.Map<String, String> CACHE = new java.util.concurrent.ConcurrentHashMap<>();
 
+    /**
+     * Localized "Copy GIF name" menu label (IG has no matching string resource and custom
+     * string resources don't resolve at patch time). Shared by the DM and picker surfaces.
+     */
+    public static String nameLabel() {
+        switch (java.util.Locale.getDefault().getLanguage()) {
+            case "ja": return "GIF名をコピー";
+            case "es": return "Copiar nombre del GIF";
+            case "pt": return "Copiar nome do GIF";
+            case "fr": return "Copier le nom du GIF";
+            case "de": return "GIF-Namen kopieren";
+            case "it": return "Copia nome GIF";
+            case "id": return "Salin nama GIF";
+            case "ru": return "Копировать название GIF";
+            case "ko": return "GIF 이름 복사";
+            case "zh": return "复制 GIF 名称";
+            case "ar": return "نسخ اسم GIF";
+            case "hi": return "GIF नाम कॉपी करें";
+            case "tr": return "GIF adını kopyala";
+            default: return "Copy GIF name";
+        }
+    }
+
     public static void resolveAndCopy(final String gifId, final String creator) {
         new Thread(new Runnable() {
             @Override

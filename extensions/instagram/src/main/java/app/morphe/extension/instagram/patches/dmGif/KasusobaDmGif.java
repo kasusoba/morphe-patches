@@ -42,29 +42,6 @@ public final class KasusobaDmGif {
         }
     }
 
-    /**
-     * Localized "Copy GIF name" label. IG has no matching string resource and custom string
-     * resources don't resolve at patch time, so translate by the device language (falls back
-     * to English). Add more languages as needed.
-     */
-    private static String label() {
-        switch (java.util.Locale.getDefault().getLanguage()) {
-            case "ja": return "GIF名をコピー";
-            case "es": return "Copiar nombre del GIF";
-            case "pt": return "Copiar nome do GIF";
-            case "fr": return "Copier le nom du GIF";
-            case "de": return "GIF-Namen kopieren";
-            case "it": return "Copia nome GIF";
-            case "id": return "Salin nama GIF";
-            case "ru": return "Копировать название GIF";
-            case "ko": return "GIF 이름 복사";
-            case "zh": return "复制 GIF 名称";
-            case "ar": return "نسخ اسم GIF";
-            case "hi": return "GIF नाम कॉपी करें";
-            case "tr": return "GIF adını kopyala";
-            default: return "Copy GIF name";
-        }
-    }
 
     /** Called from X.Ni5.H4X: maybeAdd(list, c2jy). */
     public static void maybeAdd(java.util.List list, Object c2jy) {
@@ -92,7 +69,7 @@ public final class KasusobaDmGif {
             // Stash the id in A0A (arg 8, not shown); leave the subtitle A09 (arg 9) empty.
             Object item = ctor.newInstance(
                     null, placement, action, null, null,
-                    Integer.valueOf(ICON), null, label(), MARK + giphyId, null, null);
+                    Integer.valueOf(ICON), null, GifKeywordResolver.nameLabel(), MARK + giphyId, null, null);
             list.add(item);
         } catch (Throwable t) {
             PikoUtils.logger(t);

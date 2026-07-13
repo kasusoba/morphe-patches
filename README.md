@@ -7,23 +7,36 @@ Personal [Morphe](https://morphe.software) patches for **Instagram**, based on
 
 </div>
 
-## Patches
+All patches are Instagram-only and enabled by default.
 
-### Copy GIF name
-Adds a **Copy GIF name** action that copies a GIF's **name** to your clipboard, so
-you (or anyone) can find the same GIF in the GIF picker. Available on GIFs posted in
-**comments** (a comment button) and on GIFs sent in **DMs** (a long-press menu item).
+## GIF name patches
 
-Instagram doesn't store the GIF's title (only its GIPHY id), so it resolves the real
-title from the **GIPHY API** at tap time, cleans it up (strips the trailing
-"GIF"/"Sticker" so it's directly searchable), and copies it. Fallbacks if a GIF has no
-title: de-slugged slug → creator → `giphy.com/gifs/<id>`.
+Copy a GIF's **name** to your clipboard, so you (or anyone) can find the same GIF in the
+GIF picker. Instagram doesn't store the GIF's title (only its GIPHY id), so the name is
+resolved from the **GIPHY API** at tap time, cleaned up (strips the trailing
+"GIF"/"Sticker" so it's directly searchable), and copied. Fallbacks if a GIF has no
+title: de-slugged slug → creator → `giphy.com/gifs/<id>`. The menu label is localized.
 
-**Requires your own GIPHY API key.** It is never stored in this repo — you supply it
-at patch time via the `giphyApiKey` patch option (Morphe Manager shows it as a field;
-Morphe CLI: `-O giphyApiKey=<yourkey>`). Get a free key at
-[developers.giphy.com](https://developers.giphy.com) → *Create an App* → **API**
-(not SDK).
+> **Requires your own GIPHY API key** (shared by all three patches below). It is never
+> stored in this repo — you supply it at patch time via the `giphyApiKey` patch option
+> (Morphe Manager shows it as a field; Morphe CLI: `-O giphyApiKey=<yourkey>`). Get a free
+> key at [developers.giphy.com](https://developers.giphy.com) → *Create an App* → **API**
+> (not SDK).
+
+- **`Copy GIF name`** — a button on a comment that contains a GIF.
+- **`Copy GIF name in DM`** — an item in the long-press menu of a GIF sent in a DM
+  (next to *Favorite*).
+- **`Copy GIF name in picker`** — an item in the long-press menu of a GIF tile in the
+  GIF picker (next to *Favorite*), in both the DM and comment/reel pickers.
+
+## Favorite GIF patches
+
+Favorite (save) GIFs on surfaces where Instagram doesn't normally let you. No GIPHY key
+needed — these use Instagram's own save-GIF mutation, which has no surface restriction.
+
+- **`Favorite GIF in comment picker`** — enables the long-press *Favorite* action on GIFs
+  in the comment/reel GIF picker (Instagram only offers it in DMs).
+- **`Favorite GIF comment`** — a button to favorite a GIF that's been posted in a comment.
 
 ## Building
 
@@ -41,6 +54,9 @@ java -jar morphe-cli.jar patch \
   -O giphyApiKey=<your-giphy-api-key> \
   -e "Copy GIF name" \
   -e "Copy GIF name in DM" \
+  -e "Copy GIF name in picker" \
+  -e "Favorite GIF in comment picker" \
+  -e "Favorite GIF comment" \
   <instagram>.apkm
 ```
 
