@@ -36,22 +36,30 @@ public final class KasusobaGifPickerCopyName {
 
     private static final int ICON_NAME = 0x7f08239f; // instagram_gif_outline_24
     private static final int ICON_LINK = 0x7f0824cc; // instagram_link_pano_outline_24
+    private static final int ICON_DL = 0x7f0822f5;   // instagram_download_outline_24
 
     private static Object rf(Object o, String name) throws Exception {
         return o.getClass().getField(name).get(o);
     }
 
+    private static final int KIND_NAME = 0, KIND_LINK = 1, KIND_DOWNLOAD = 2;
+
     /** Called from X.G1t.FFx in place of Collections.singletonList(favoriteItem). */
     public static List menu(final Object favoriteItem) {
         try {
-            // favoriteItem.A01.A00.A01.A01 -> DirectAnimatedMedia, .getId() -> giphy id
+            // favoriteItem.A01.A00.A01.A01 -> DirectAnimatedMedia; .getId() -> giphy id,
+            // .A02(GifUrlImpl).A09 -> animated .gif cdn url.
             Object dam = rf(rf(rf(rf(favoriteItem, "A01"), "A00"), "A01"), "A01");
             final String giphyId = (String) dam.getClass().getMethod("getId").invoke(dam);
+            String url = null;
+            try { url = (String) rf(rf(dam, "A02"), "A09"); } catch (Throwable ignored) {}
+            final String gifUrl = url;
 
             List list = new ArrayList();
             list.add(favoriteItem);
-            list.add(proxyItem(favoriteItem, giphyId, false)); // Copy GIF name
-            list.add(proxyItem(favoriteItem, giphyId, true));  // Copy GIPHY link
+            list.add(proxyItem(favoriteItem, giphyId, gifUrl, KIND_NAME));
+            list.add(proxyItem(favoriteItem, giphyId, gifUrl, KIND_LINK));
+            if (gifUrl != null) list.add(proxyItem(favoriteItem, giphyId, gifUrl, KIND_DOWNLOAD));
             return list;
         } catch (Throwable t) {
             PikoUtils.logger(t);
@@ -60,7 +68,7 @@ public final class KasusobaGifPickerCopyName {
     }
 
     /** A menu item (Proxy over X.InterfaceC90767alz) whose AKB builds our row. */
-    private static Object proxyItem(final Object favoriteItem, final String giphyId, final boolean isLink) {
+    private static Object proxyItem(final Object favoriteItem, final String giphyId, final String gifUrl, final int kind) {
         final Class<?> itemIface = itemInterface(favoriteItem);
         return Proxy.newProxyInstance(
                 itemIface.getClassLoader(),
@@ -72,7 +80,7 @@ public final class KasusobaGifPickerCopyName {
                             return objectMethod(proxy, method, args);
                         }
                         if (args != null && args.length == 1 && args[0] instanceof Context) {
-                            return buildRow((Context) args[0], favoriteItem, giphyId, isLink);
+                            return buildRow((Context) args[0], favoriteItem, giphyId, gifUrl, kind);
                         }
                         return defaultValue(method.getReturnType());
                     }
@@ -91,7 +99,7 @@ public final class KasusobaGifPickerCopyName {
     }
 
     /** Build our X.C58446MxL row, mirroring the favorite item's own AKB output. */
-    private static Object buildRow(Context context, Object favoriteItem, final String giphyId, final boolean isLink) throws Exception {
+    private static Object buildRow(Context context, Object favoriteItem, final String giphyId, final String gifUrl, final int kind) throws Exception {
         // Invoke the favorite item's AKB to learn the row class + ctor.
         Method akb = null;
         for (Method m : itemInterface(favoriteItem).getMethods()) {
@@ -118,7 +126,8 @@ public final class KasusobaGifPickerCopyName {
                         if (method.getDeclaringClass() == Object.class) return objectMethod(proxy, method, args);
                         // ElS() is void (the tap action); BhJ() returns boolean (enabled?).
                         if (method.getReturnType() == void.class) {
-                            if (isLink) GifKeywordResolver.copyGiphyLink(giphyId);
+                            if (kind == KIND_LINK) GifKeywordResolver.copyGiphyLink(giphyId);
+                            else if (kind == KIND_DOWNLOAD) GifKeywordResolver.downloadGif(gifUrl, giphyId + ".gif");
                             else GifKeywordResolver.resolveAndCopy(giphyId, null);
                             return null;
                         }
@@ -127,8 +136,11 @@ public final class KasusobaGifPickerCopyName {
                     }
                 });
 
-        Drawable icon = context.getDrawable(isLink ? ICON_LINK : ICON_NAME);
-        String label = isLink ? GifKeywordResolver.linkLabel() : GifKeywordResolver.nameLabel();
+        int iconId = kind == KIND_LINK ? ICON_LINK : kind == KIND_DOWNLOAD ? ICON_DL : ICON_NAME;
+        Drawable icon = context.getDrawable(iconId);
+        String label = kind == KIND_LINK ? GifKeywordResolver.linkLabel()
+                : kind == KIND_DOWNLOAD ? GifKeywordResolver.downloadLabel()
+                : GifKeywordResolver.nameLabel();
         // ctor args mirror IG's: (Drawable, Drawable icon, onClick, Integer, String label, String, boolean x3)
         return ctor.newInstance(null, icon, onClick, null, label, null, false, false, false);
     }

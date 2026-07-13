@@ -17,6 +17,7 @@ import app.morphe.util.getReference
 import com.android.tools.smali.dexlib2.Opcode
 import com.android.tools.smali.dexlib2.iface.instruction.OneRegisterInstruction
 import com.android.tools.smali.dexlib2.iface.instruction.WideLiteralInstruction
+import com.android.tools.smali.dexlib2.iface.reference.FieldReference
 import com.android.tools.smali.dexlib2.iface.reference.MethodReference
 import com.android.tools.smali.dexlib2.iface.reference.TypeReference
 
@@ -53,6 +54,35 @@ internal object BottomBarItemClickFingerprint : Fingerprint(
     returnType = "V",
     parameters = listOf("Landroid/view/View;"),
     strings = listOf("bottom_bar"),
+)
+
+// The DM action dispatcher X.Nk3.DgO(EnumC46985Icr, String): OIt/MQt call
+// InterfaceC65219PjI.DgO(action, item.A0A) for actions they don't consume. Kept as a catch-all
+// keyed on the payload string (the per-zone hooks OIt/MQt/MQC already cover our items before
+// their own DgO call, so this mainly future-proofs any dispatch that reaches DgO directly).
+// Disambiguated from the sibling implementor X.UPm.DgO (same signature) by requiring a
+// reference to X.MIt (C56550MIt, the message-actions dispatcher that only the DM DgO uses).
+// NOTE: the "More" overflow submenu does NOT reach DgO — it dispatches via X.MQC.onClick (see
+// hook 5) straight into X.MIt.
+internal object DgoDispatchFingerprint : Fingerprint(
+    returnType = "V",
+    parameters = listOf("LX/Icr;", "Ljava/lang/String;"),
+    custom = { method, _ ->
+        method.implementation?.instructions?.any {
+            it.getReference<FieldReference>()?.definingClass == "LX/MIt;" ||
+                it.getReference<MethodReference>()?.definingClass == "LX/MIt;"
+        } == true
+    },
+)
+
+// The "More" overflow submenu item click listener X.MQC.onClick(View): it reads the tapped
+// item (this.A0Z, a LongPressActionData) and dispatches via X.MIt — bypassing DgO. Items that
+// overflow into the "More" bottom sheet route here. Uniquely identified by onClick(View)V +
+// the "more_action_sheet" string.
+internal object MoreSubmenuClickFingerprint : Fingerprint(
+    returnType = "V",
+    parameters = listOf("Landroid/view/View;"),
+    strings = listOf("more_action_sheet"),
 )
 
 /**
@@ -163,6 +193,44 @@ val dmGifCopyKeywordPatch =
                     return-void
                     """.trimIndent(),
                     ExternalLabel("kdm_continue_mqt", getInstruction(0)),
+                )
+            }
+
+            // --- 4. Nk3.DgO: catch our items in EVERY click zone (main/popup/"More" submenu) ---
+            // via the shared action dispatcher, keyed on the payload string (item.A0A) it gets.
+            DgoDispatchFingerprint.method.apply {
+                // instance (Icr, String)V -> String param is the last register.
+                val strRegister = implementation!!.registerCount - 1
+                val free = findFreeRegister(0)
+                addInstructionsWithLabels(
+                    0,
+                    """
+                    move-object/from16 v$free, v$strRegister
+                    invoke-static { v$free }, $EXT->handlePayload(Ljava/lang/String;)Z
+                    move-result v$free
+                    if-eqz v$free, :kdm_continue_dgo
+                    return-void
+                    """.trimIndent(),
+                    ExternalLabel("kdm_continue_dgo", getInstruction(0)),
+                )
+            }
+
+            // --- 5. MQC.onClick: intercept items tapped in the "More" overflow bottom sheet ---
+            MoreSubmenuClickFingerprint.method.apply {
+                val mqcType = MoreSubmenuClickFingerprint.classDef.type
+                val thisRegister = implementation!!.registerCount - parameterTypes.size - 1
+                val free = findFreeRegister(0)
+                addInstructionsWithLabels(
+                    0,
+                    """
+                    move-object/from16 v$free, v$thisRegister
+                    iget-object v$free, v$free, $mqcType->A0Z:Lcom/instagram/direct/messagethread/interaction/longpressaction/LongPressActionData;
+                    invoke-static { v$free }, $EXT->handleItemClick(Ljava/lang/Object;)Z
+                    move-result v$free
+                    if-eqz v$free, :kdm_continue_mqc
+                    return-void
+                    """.trimIndent(),
+                    ExternalLabel("kdm_continue_mqc", getInstruction(0)),
                 )
             }
         }

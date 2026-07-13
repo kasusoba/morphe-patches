@@ -14,8 +14,12 @@ import java.net.URL;
 
 import org.json.JSONObject;
 
+import android.content.Context;
+
 import app.morphe.extension.shared.Utils;
 import app.morphe.extension.crimera.PikoUtils;
+import app.morphe.extension.instagram.constants.Constants;
+import app.morphe.extension.instagram.patches.download.DownloadUtils;
 
 /**
  * Resolves a GIF's human title/keyword from its GIPHY id via the GIPHY HTTP API,
@@ -78,6 +82,40 @@ public final class GifKeywordResolver {
             case "hi": return "GIPHY लिंक कॉपी करें";
             case "tr": return "GIPHY bağlantısını kopyala";
             default: return "Copy GIPHY link";
+        }
+    }
+
+    /** Localized "Download GIF" menu label. Shared by the DM and picker surfaces. */
+    public static String downloadLabel() {
+        switch (java.util.Locale.getDefault().getLanguage()) {
+            case "ja": return "GIFをダウンロード";
+            case "es": return "Descargar GIF";
+            case "pt": return "Baixar GIF";
+            case "fr": return "Télécharger le GIF";
+            case "de": return "GIF herunterladen";
+            case "it": return "Scarica GIF";
+            case "id": return "Unduh GIF";
+            case "ru": return "Скачать GIF";
+            case "ko": return "GIF 다운로드";
+            case "zh": return "下载 GIF";
+            case "ar": return "تنزيل GIF";
+            case "hi": return "GIF डाउनलोड करें";
+            case "tr": return "GIF'i indir";
+            default: return "Download GIF";
+        }
+    }
+
+    /** Download a GIF from its (cdn) URL to the device's Gif folder, reusing piko's downloader. */
+    public static void downloadGif(String gifUrl, String fileName) {
+        try {
+            if (isBlank(gifUrl)) { PikoUtils.toast("No GIF to download"); return; }
+            Context context = (Context) Utils.getActivity();
+            if (context == null) return;
+            if (isBlank(fileName)) fileName = "gif";
+            if (!fileName.toLowerCase().endsWith(".gif")) fileName = fileName + ".gif";
+            DownloadUtils.downloadMediaUrl(context, gifUrl, Constants.DEFAULT_GIF_FOLDER, fileName);
+        } catch (Throwable t) {
+            PikoUtils.logger(t);
         }
     }
 

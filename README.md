@@ -41,6 +41,16 @@ distinguished by a link icon.
 - part of **`Copy GIF name in DM`** / **`Copy GIF name in picker`** — the DM and picker
   menus show *both* "Copy GIF name" and "Copy GIPHY link" items.
 
+## Download GIF patches
+
+Download a GIF to your device (reuses piko's downloader → your Gif folder). No GIPHY key
+needed.
+
+- part of **`Copy GIF name in DM`** / **`Copy GIF name in picker`** — the DM and picker
+  menus also include a localized "Download GIF" item.
+- for GIFs (and custom images) **posted in comments**, use piko's own
+  **`Save media comment`** patch (`-e "Save media comment"`) — no extra code here.
+
 ## Favorite GIF patches
 
 Favorite (save) GIFs on surfaces where Instagram doesn't normally let you. No GIPHY key
@@ -70,6 +80,7 @@ java -jar morphe-cli.jar patch \
   -e "Copy GIPHY link" \
   -e "Favorite GIF in comment picker" \
   -e "Favorite GIF comment" \
+  -e "Save media comment" \
   <instagram>.apkm
 ```
 

@@ -32,9 +32,11 @@ public final class KasusobaDmGif {
     // Stable IG drawable ids (survive Morphe's recompile): gif outline + copy icons.
     private static final int ICON_NAME = 0x7f08239f; // instagram_gif_outline_24
     private static final int ICON_LINK = 0x7f0824cc; // instagram_link_pano_outline_24
-    // Sentinel prefixes tagging our items (each carries the giphy id in the item's A0A slot).
+    private static final int ICON_DL = 0x7f0822f5;   // instagram_download_outline_24
+    // Sentinel prefixes tagging our items (payload stored in the item's A0A slot).
     private static final String NAME_MARK = "KDMN:";
     private static final String LINK_MARK = "KDML:";
+    private static final String DL_MARK = "KDMD:"; // payload = giphyId + " " + gifUrl
 
     private static Object rf(Object o, String name) {
         try {
@@ -66,6 +68,14 @@ public final class KasusobaDmGif {
             Object linkItem = buildItem(ctor, ICON_LINK, GifKeywordResolver.linkLabel(), LINK_MARK + giphyId);
             if (nameItem != null) list.add(nameItem);
             if (linkItem != null) list.add(linkItem);
+
+            // Download: the GifUrlImpl (C2JY.A00) A09 field is the animated .gif cdn url.
+            Object gifUrlObj = rf(rf(c2jy, "A00"), "A09");
+            if (gifUrlObj instanceof String && ((String) gifUrlObj).length() > 0) {
+                Object dlItem = buildItem(ctor, ICON_DL, GifKeywordResolver.downloadLabel(),
+                        DL_MARK + giphyId + " " + gifUrlObj);
+                if (dlItem != null) list.add(dlItem);
+            }
         } catch (Throwable t) {
             PikoUtils.logger(t);
         }
@@ -100,14 +110,36 @@ public final class KasusobaDmGif {
         try {
             if (item == null || !item.getClass().getName().endsWith(".LongPressActionData")) return false;
             Object v = rf(item, "A0A");
-            if (!(v instanceof String)) return false;
-            String s = (String) v;
+            return (v instanceof String) && handlePayload((String) v);
+        } catch (Throwable t) {
+            PikoUtils.logger(t);
+            return false;
+        }
+    }
+
+    /**
+     * Called from X.Nk3.DgO (the action dispatcher all click zones converge on — the main
+     * sheet, the popup, and the "More" submenu) with the tapped item's A0A payload. Returns
+     * true (so DgO returns early) for our marked items. This is what makes items work in ALL
+     * zones, including the "More" overflow submenu that the per-zone click hooks don't cover.
+     */
+    public static boolean handlePayload(String s) {
+        try {
+            if (s == null) return false;
             if (s.startsWith(NAME_MARK)) {
                 GifKeywordResolver.resolveAndCopy(s.substring(NAME_MARK.length()), null);
                 return true;
             }
             if (s.startsWith(LINK_MARK)) {
                 GifKeywordResolver.copyGiphyLink(s.substring(LINK_MARK.length()));
+                return true;
+            }
+            if (s.startsWith(DL_MARK)) {
+                String rest = s.substring(DL_MARK.length());
+                int sp = rest.indexOf(' ');
+                String id = (sp > 0) ? rest.substring(0, sp) : "";
+                String url = (sp > 0) ? rest.substring(sp + 1) : rest;
+                GifKeywordResolver.downloadGif(url, id + ".gif");
                 return true;
             }
             return false;
