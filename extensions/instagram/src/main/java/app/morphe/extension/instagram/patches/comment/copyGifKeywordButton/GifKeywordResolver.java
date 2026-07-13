@@ -58,9 +58,9 @@ public final class GifKeywordResolver {
                         try {
                             if (!isBlank(result)) {
                                 Utils.setClipboard(result);
-                                PikoUtils.toast("GIF keyword copied: " + result);
+                                PikoUtils.toast("GIF name copied: " + result);
                             } else {
-                                PikoUtils.toast("No GIF keyword found");
+                                PikoUtils.toast("No GIF name found");
                             }
                         } catch (Throwable t) {
                             PikoUtils.logger(t);

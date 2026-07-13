@@ -9,15 +9,15 @@ Personal [Morphe](https://morphe.software) patches for **Instagram**, based on
 
 ## Patches
 
-### Copy GIF keyword
-Adds a button to a comment that contains a GIF which copies the GIF's **search
-keyword / name** to your clipboard, so you (or anyone) can find the same GIF in the
-GIF picker.
+### Copy GIF name
+Adds a **Copy GIF name** action that copies a GIF's **name** to your clipboard, so
+you (or anyone) can find the same GIF in the GIF picker. Available on GIFs posted in
+**comments** (a comment button) and on GIFs sent in **DMs** (a long-press menu item).
 
-Instagram doesn't store the GIF's title in the comment (only its GIPHY id), so the
-button resolves the real title from the **GIPHY API** at tap time, cleans it up
-(strips the trailing "GIF"/"Sticker" so it's directly searchable), and copies it.
-Fallbacks if a GIF has no title: de-slugged slug → creator → `giphy.com/gifs/<id>`.
+Instagram doesn't store the GIF's title (only its GIPHY id), so it resolves the real
+title from the **GIPHY API** at tap time, cleans it up (strips the trailing
+"GIF"/"Sticker" so it's directly searchable), and copies it. Fallbacks if a GIF has no
+title: de-slugged slug → creator → `giphy.com/gifs/<id>`.
 
 **Requires your own GIPHY API key.** It is never stored in this repo — you supply it
 at patch time via the `giphyApiKey` patch option (Morphe Manager shows it as a field;
@@ -39,7 +39,8 @@ Morphe CLI: `-O giphyApiKey=<yourkey>`). Get a free key at
 java -jar morphe-cli.jar patch \
   -p patches/build/libs/patches-*.mpp \
   -O giphyApiKey=<your-giphy-api-key> \
-  -e "Copy GIF keyword" \
+  -e "Copy GIF name" \
+  -e "Copy GIF name in DM" \
   <instagram>.apkm
 ```
 

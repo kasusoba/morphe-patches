@@ -40,8 +40,8 @@ import com.android.tools.smali.dexlib2.iface.instruction.formats.Instruction31i
 @Suppress("unused")
 val copyGifKeywordPatch =
     bytecodePatch(
-        name = "Copy GIF keyword",
-        description = "Adds a button to copy the search keyword/name of a GIF in a comment.",
+        name = "Copy GIF name",
+        description = "Adds a button to copy the name of a GIF in a comment.",
         default = true,
     ) {
         compatibleWith(COMPATIBILITY_INSTAGRAM)
@@ -60,7 +60,7 @@ val copyGifKeywordPatch =
             default = null,
             title = "GIPHY API key",
             description = "Your own GIPHY REST API key (free from developers.giphy.com -> Create App -> API). " +
-                "Required for the button to resolve a GIF's name/keyword.",
+                "Required for the button to resolve a GIF's name.",
             required = false,
         )
 
