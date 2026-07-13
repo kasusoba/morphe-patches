@@ -1,0 +1,6 @@
+{
+  "created_at": "2026-07-13T16:45:00",
+  "description": "Kasusoba patches v3.8.0 (fork of piko). Adds GIF utilities on Instagram: Copy GIF name, Copy GIPHY link, and Download GIF across comments, DMs and the GIF picker; plus Favorite GIF in the comment picker and on comment GIFs. Includes all piko patches.",
+  "download_url": "https://github.com/kasusoba/morphe-patches/releases/download/v3.8.0/patches-3.8.0.mpp",
+  "version": "3.8.0"
+}
